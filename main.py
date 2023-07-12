@@ -1,12 +1,20 @@
 from tkinter import *
 from PIL import Image, ImageTk
+import base64
+
+def sifrele():
+    metin = secret_text.get("1.0",END)
+    metin_bytes = metin.encode()
+    sifreli_metin = base64.b64encode(metin_bytes)
+    return sifreli_metin
 
 def dosya_kaydet(metin,baslik):
-    with open("secret.txt","a") as dosya:
-        dosya.write("\n" + baslik + "\n" + metin)
+    baslik_bytes = baslik.encode()
+    with open("secret.txt","ab") as dosya:
+        dosya.write(b"\n" + baslik_bytes + b"\n" + metin)
 
 def button_clicked():
-    dosya_kaydet(secret_text.get("1.0",END),title_entry.get())
+    dosya_kaydet(sifrele(),title_entry.get())
 
 window = Tk()
 window.minsize(width=400,height=700)
