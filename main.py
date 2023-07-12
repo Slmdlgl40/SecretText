@@ -1,6 +1,13 @@
 from tkinter import *
 from PIL import Image, ImageTk
 
+def dosya_kaydet(metin,baslik):
+    with open("secret.txt","a") as dosya:
+        dosya.write("\n" + baslik + "\n" + metin)
+
+def button_clicked():
+    dosya_kaydet(secret_text.get("1.0",END),title_entry.get())
+
 window = Tk()
 window.minsize(width=400,height=700)
 window.title("Secret Notes")
@@ -32,7 +39,7 @@ label_3.place(x=117,y=560)
 key_entry = Entry(width=20)
 key_entry.place(x=107,y=590)
 
-encrypt_button = Button(text="Save & Encrypt",width=10)
+encrypt_button = Button(text="Save & Encrypt",width=10,command=button_clicked)
 encrypt_button.place(x=141,y=620)
 
 decrypt_button = Button(text="Decrypt",width=10)
