@@ -3,28 +3,46 @@ from PIL import Image, ImageTk
 import base64
 def encrypt():
     metin = secret_text.get("1.0",END)
+    sifre = key_entry.get()
     metin_bytes = metin.encode()
-    sifreli_metin = base64.b64encode(metin_bytes)
-    return sifreli_metin
+    sifre_bytes = sifre.encode()
+    encrypted_text_bytes = []
+
+    for i in range(len(metin_bytes)):
+        encrypted_byte = metin_bytes[i] ^ sifre_bytes[i % len(sifre_bytes)]
+        encrypted_text_bytes.append(encrypted_byte)
+
+    encrypted_text = base64.b64encode(bytes(encrypted_text_bytes))
+    return encrypted_text
 
 def decrypt():
+    sifre = key_entry.get()
+    sifre_bytes = sifre.encode()
     encrypted_text = secret_text.get("1.0",END)
-    decrypted_text = base64.b64decode(encrypted_text)
-    decrypted_text_bytes = decrypted_text.decode()
-    return decrypted_text_bytes
+    encrypted_text_bytes = base64.b64decode(encrypted_text)
+    decrypted_text_bytes = []
 
-def dosya_kaydet(metin,baslik):
+    for i in range(len(encrypted_text_bytes)):
+        decrypted_byte = encrypted_text_bytes[i] ^ sifre_bytes[i % len(sifre_bytes)]
+        decrypted_text_bytes.append(decrypted_byte)
+
+    decrypted_text = bytes(decrypted_text_bytes).decode()
+    return decrypted_text
+
+def dosya_kaydet():
+    baslik = title_entry.get()
     baslik_bytes = baslik.encode()
+    sifreli_metin = encrypt()
     with open("secret.txt","ab") as dosya:
-        dosya.write(b"\n" + baslik_bytes + b"\n" + metin)
+        dosya.write(b"\n" + baslik_bytes + b"\n" + sifreli_metin)
 
 def encrypt_button_clicked():
-    dosya_kaydet(encrypt(),title_entry.get())
+    dosya_kaydet()
 
 def decrypt_button_clicked():
-    message = decrypt()
+    decrypted_text = decrypt()
     secret_text.delete("1.0",END)
-    secret_text.insert("1.0",message)
+    secret_text.insert("1.0",decrypted_text)
 
 window = Tk()
 window.minsize(width=400,height=700)
@@ -64,4 +82,3 @@ decrypt_button = Button(text="Decrypt",width=10,command=decrypt_button_clicked)
 decrypt_button.place(x=141,y=650)
 
 window.mainloop()
-
