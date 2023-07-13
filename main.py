@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import base64
 def encrypt():
@@ -37,12 +38,19 @@ def dosya_kaydet():
         dosya.write(b"\n" + baslik_bytes + b"\n" + sifreli_metin)
 
 def encrypt_button_clicked():
-    dosya_kaydet()
+    if title_entry.get() == "" or secret_text.get("1.0", END) == "" or key_entry.get() == "":
+        messagebox.showwarning("Alan boş bırakıldı", "Lütfen tüm alanları doldurun")
+    else:
+        dosya_kaydet()
 
 def decrypt_button_clicked():
-    decrypted_text = decrypt()
-    secret_text.delete("1.0",END)
-    secret_text.insert("1.0",decrypted_text)
+
+    if secret_text.get("1.0",END) == "" or key_entry.get() == "":
+        messagebox.showwarning("Alan boş bırakıldı", "Lütfen tüm alanları doldurun")
+    else:
+        decrypted_text = decrypt()
+        secret_text.delete("1.0", END)
+        secret_text.insert("1.0", decrypted_text)
 
 window = Tk()
 window.minsize(width=400,height=700)
